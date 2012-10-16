@@ -25,6 +25,8 @@ if(!fs.existsSync(gitRepo)) {
 var watchedBranch = argv.b;
 console.log("Watched Branch: " + watchedBranch);
 
+var executeScript = argv.e || null;
+
 app.use(express.bodyParser());
 app.post('/github', function(req, res) {
 
@@ -67,13 +69,13 @@ app.post('/github', function(req, res) {
 		},
 		function(err, stdout, stderr) {
 			if(err) return console.error(err);
-			console.log(stdout);
-			console.error(stderr);
-      if(argv.e) {
-        exec(argv.e, {cwd: gitRepo}, function(err, stdout, stderr) {
+			process.stdout.write(stdout);
+			process.stderr.write(stderr);
+      if(executeScript) {
+        exec(executeScript, {cwd: gitRepo}, function(err, stdout, stderr) {
           if(err) return console.error(err);
-          console.log("'" + argv.e + "' ", stdout);
-          console.log("'" + argv.e + "' [ERROR] ", stderr);
+          process.stdout.write(stdout);
+          process.stderr.write(stderr);
         });
       }
 		}
