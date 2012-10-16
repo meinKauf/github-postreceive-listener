@@ -1,11 +1,8 @@
 var express = require('express');
 var app = express();
 var cp = require('child_process');
-var spawn = cp.spawn;
 var exec = cp.exec;
 var fs = require('fs');
-
-var forcePullScript = __dirname + '/bin/forcePull';
 
 var args = process.argv;
 if(args.length <= 2) {
@@ -20,6 +17,8 @@ if(!fs.existsSync(gitRepo)) {
 }
 
 var watchedBranch = args[3] || 'master';
+console.log("Watched Branch: " + watchedBranch);
+
 
 app.use(express.bodyParser());
 app.post('/github', function(req, res) {
@@ -40,6 +39,7 @@ app.post('/github', function(req, res) {
 
 	var branch = payload.ref.replace(/^.*\/([^\/]+)$/,'$1');
 	console.log("Payload for Branch: '" + branch + "' received");
+	console.log("Watched branch: '" + watchedBranch + "'");
 
 	if(watchedBranch !== branch) {
 		console.log("branch '" + branch + "' not matching '" + watchedBranch + "'");
