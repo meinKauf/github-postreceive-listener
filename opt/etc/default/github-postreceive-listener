@@ -1,6 +1,11 @@
+#
+# GitHub Post-Receive Listener
+#
+
 GIT_REPO="/var/www/projectFoo"
 GIT_WATCHED_BRANCH="dev"
+#GIT_CALL_SCRIPT="/var/www/projectFoo/bin/update.sh"
 
-GHL_HOME="/usr/local/github-postreceive-listener"
+GHL_HOME="/opt/github-postreceive-listener"
 GHL_LOGFILE="${GHL_HOME}/logs/app.log"
 GHL_RUN_USER="maint"

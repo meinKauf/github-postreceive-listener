@@ -1,8 +1,8 @@
 var express = require('express');
-var app = express();
-var cp = require('child_process');
-var exec = cp.exec;
+var exec = require('child_process').exec;
 var fs = require('fs');
+var optimist = require('optimist');
+var app = express();
 
 var gitHubIps = [
   '207.97.227.253',
@@ -11,21 +11,19 @@ var gitHubIps = [
   '127.0.0.1'
 ];
 
-var args = process.argv;
-if(args.length <= 2) {
-	console.error("Usage: /path/to/gitrepo [Watched BRANCH]");
-	process.exit(1);
-}
+optimist.usage('Usage $0 -r [gitRepPath] -b [branchToWatch] -e [pathToScript]');
+optimist.demand(['r']);
+optimist.default('b', 'master');
+var argv = optimist.argv;
 
-var gitRepo = args[2];
+var gitRepo = argv.r;
 if(!fs.existsSync(gitRepo)) {
 	console.error("'" + gitRepo + "' does not exist or is not readable");
 	process.exit(1);
 }
 
-var watchedBranch = args[3] || 'master';
+var watchedBranch = argv.b;
 console.log("Watched Branch: " + watchedBranch);
-
 
 app.use(express.bodyParser());
 app.post('/github', function(req, res) {
@@ -53,8 +51,7 @@ app.post('/github', function(req, res) {
 	}
 
 	var branch = payload.ref.replace(/^.*\/([^\/]+)$/,'$1');
-	console.log("Payload for Branch: '" + branch + "' received");
-	console.log("Watched branch: '" + watchedBranch + "'");
+	console.log("Payload for Branch: '" + branch + "' from '"+ remoteIp +"' received");
 
 	if(watchedBranch !== branch) {
 		console.log("branch '" + branch + "' not matching '" + watchedBranch + "'");
@@ -62,6 +59,7 @@ app.post('/github', function(req, res) {
 		return;
 	}
 
+  console.log("Will update and reset to the latest commit on '" + branch + "'");
 	exec(
 		'git checkout -f "' + branch + '" && git pull && git reset --hard',
 		{
@@ -71,6 +69,13 @@ app.post('/github', function(req, res) {
 			if(err) return console.error(err);
 			console.log(stdout);
 			console.error(stderr);
+      if(argv.e) {
+        exec(argv.e, {cwd: gitRepo}, function(err, stdout, stderr) {
+          if(err) return console.error(err);
+          console.log("'" + argv.e + "' ", stdout);
+          console.log("'" + argv.e + "' [ERROR] ", stderr);
+        });
+      }
 		}
 	);
 
