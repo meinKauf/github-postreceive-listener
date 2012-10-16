@@ -1,0 +1,23 @@
+{
+  "name": "github-postreceive-listener",
+  "version": "0.0.1",
+  "description": "Listener for GitHubs Post Receive WebHooks",
+  "main": "index.js",
+  "dependencies": {
+    "express": "~3.0.0rc5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meinKauf/github-postreceive-listener.git"
+  },
+  "keywords": [
+    "github",
+    "git"
+  ],
+  "author": "Thomas Fritz",
+  "license": "MIT"
+}
