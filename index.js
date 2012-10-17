@@ -65,11 +65,11 @@ app.post('/github', function (req, res) {
 
   console.log("Will execute '" + executeScript + "'");
   exec(executeScript, function (err, stdout, stderr) {
+    process.stdout.write(stdout);
+    process.stderr.write(stderr);
     if (err) {
       return console.error(err);
     }
-    process.stdout.write(stdout);
-    process.stderr.write(stderr);
   });
 
 });
