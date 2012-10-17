@@ -1,8 +1,6 @@
 #
 # GitHub Post-Receive Listener
 #
-
-GIT_REPO="/opt/projectFoo"
 GIT_WATCHED_BRANCH="dev"
 GIT_CALL_SCRIPT="/opt/projectFoo/bin/update.sh"
 
